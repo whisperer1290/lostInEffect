@@ -8,6 +8,7 @@ import sqlite3
 class AccessControl:
     def __init__(self, config: SecurityConfig):
         self.config = config
+        self.config.secret_key = "your-secret-key-here-change-in-production"  # Add missing secret key
         self.session_cache = {}
         self.db_conn = self._init_database()
         

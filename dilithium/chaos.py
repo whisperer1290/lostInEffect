@@ -191,3 +191,33 @@ class HybridEncryption:
             
         except Exception as e:
             raise RuntimeError(f"Decryption failed: {str(e)}") 
+    
+    def decrypt_and_verify(self, ciphertext: bytes, nonce: bytes, signature: Tuple, public_key: Dict, private_key: Dict) -> Tuple[bytes, bool]:
+        """Decrypt ciphertext and verify signature - returns (decrypted_data, verification_status)"""
+        try:
+            print("\nStarting hybrid decryption with verification:")
+            print(f"1. Received ciphertext size: {len(ciphertext)} bytes")
+            print(f"2. Received nonce size: {len(nonce)} bytes")
+            print("3. Verifying Dilithium signature...")
+            
+            # Verify signature first
+            verification_result = self.verifier.verify(ciphertext, signature, public_key)
+            
+            if verification_result:
+                print("4. Signature verified successfully")
+            else:
+                print("4. Warning: Signature verification failed")
+            
+            # Use private key seed for decryption (more secure)
+            lorenz = LorenzEncryption(private_key['seed'])
+            print("5. Initialized Lorenz system with private key seed")
+            
+            # Decrypt message
+            decrypted = lorenz.decrypt(ciphertext, nonce)
+            print(f"6. Decrypted message size: {len(decrypted)} bytes")
+            
+            return decrypted, verification_result
+            
+        except Exception as e:
+            print(f"Error during decryption: {str(e)}")
+            raise RuntimeError(f"Hybrid decryption failed: {str(e)}") 

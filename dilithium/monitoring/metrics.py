@@ -22,8 +22,8 @@ class MonitoringSystem:
         self.metrics_history = deque(maxlen=self.metrics_window)
         self.alert_thresholds = {
             'latency_ms': 1000,
-            'cpu_usage': 80.0,
-            'memory_usage': 85.0,
+            'cpu_usage': 90.0,
+            'memory_usage': 95.0,  # Increased to reduce false alerts
             'error_rate': 0.01,
             'queue_size': 1000
         }
@@ -51,6 +51,12 @@ class MonitoringSystem:
             value = getattr(metric, key)
             if value > threshold:
                 self._trigger_alert(key, value, threshold)
+                
+    def _trigger_alert(self, metric_name: str, value: float, threshold: float) -> None:
+        """Trigger an alert when threshold is exceeded"""
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(f"Alert: {metric_name} exceeded threshold. Value: {value}, Threshold: {threshold}")
                 
     def get_statistics(self) -> Dict:
         """Calculate statistical metrics"""

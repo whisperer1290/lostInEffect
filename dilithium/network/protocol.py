@@ -83,8 +83,10 @@ class CryptoNetworkProtocol:
             mu = base64.b64decode(message_dict['mu'])
             z_bytes = base64.b64decode(message_dict['z'])
             
-            # Reconstruct z array
-            z = np.frombuffer(z_bytes, dtype=np.int32)
+            # Reconstruct z array with proper shape
+            n = 256
+            l_param = len(z_bytes) // (n * 4)  # 4 bytes per int32
+            z = np.frombuffer(z_bytes, dtype=np.int32).reshape(l_param, n)
             
             # Reconstruct public key
             public_key = {
@@ -110,8 +112,10 @@ class CryptoNetworkProtocol:
             mu = base64.b64decode(data_dict['mu'])
             z_bytes = base64.b64decode(data_dict['z'])
             
-            # Reconstruct z array
-            z = np.frombuffer(z_bytes, dtype=np.int32)
+            # Reconstruct z array with proper shape
+            n = 256
+            l_param = len(z_bytes) // (n * 4)  # 4 bytes per int32
+            z = np.frombuffer(z_bytes, dtype=np.int32).reshape(l_param, n)
             
             # Reconstruct public key
             public_key = {
